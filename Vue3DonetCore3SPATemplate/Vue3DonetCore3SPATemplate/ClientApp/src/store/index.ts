@@ -6,17 +6,17 @@ import authentication from './authentication'
 import pageIdle from './pageIdle'
 
 export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-    authentication,
-    pageIdle,
-  },
-  plugins: [
-    createMultiTabState(),
-  ],
+    state: {
+    },
+    mutations: {
+    },
+    actions: {
+    },
+    modules: {
+        authentication,
+        pageIdle,
+    },
+    plugins: [
+        createMultiTabState(),
+    ],
 })
