@@ -1,21 +1,38 @@
-// interface IUserRole{
-    
-// }
+enum AccountStatus{
+    Uncheck = 0, // 未審核用戶
+    Approved = 1, // 合法用戶
+    Rejected = 2, // 拒絕用戶
+    Suspend = 3, // 停權用戶
+}
+
+enum UserRoles
+{
+    Admin = 1,
+    User = 2,        
+}
+
+interface IUserRole{
+    id: number;
+    codeName: string;
+    displayName: string;
+}
 
 interface IClaims{
-    emailaddress: string;
+    email: string;
     name: string;
-    role: string
+    accountStatus: AccountStatus;
+    userRoles: Array<IUserRole>;
 }
 
 interface IAuthentication{
     isAuthenticated: boolean;
-    // userRoles: Array<IUserRole>;
     claims: IClaims;
 }
 
 export {
-    // IUserRole,
+    AccountStatus,
+    UserRoles,
+    IUserRole,
     IClaims,
     IAuthentication,
 }

@@ -5,13 +5,15 @@ axios.defaults.withCredentials = true
 
 interface ILogin{
     email: string;
+    name: string;
+    password: string;
 } 
 
 function GetUserInfo(store: Store<any>){
     return axios.get(process.env.VUE_APP_SERVER_URL + 'api/account/getuserinfo')
         .then( response =>{
-            store.commit("authentication/SetClaims", response.data.claims)
             // console.log(response.data)
+            store.commit("authentication/SetClaims", response.data)
         })
 }
 

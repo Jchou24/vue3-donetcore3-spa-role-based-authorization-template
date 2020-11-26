@@ -3,11 +3,11 @@ import { IAuthentication, IClaims } from '@/models/authentication'
 function GetInitAuthentication(): IAuthentication{
     return {
         isAuthenticated: false,
-        // userRoles: [],
         claims: {
-            emailaddress: "",
+            email: "",
             name: "",
-            role: "",
+            accountStatus: 0,
+            userRoles: [],
         },
     }
 }
@@ -27,7 +27,8 @@ export default{
         },
         SetIsAuthenticated: ( state: IAuthentication, isAuthenticated: boolean ) => state.isAuthenticated = isAuthenticated,
         SetClaims: ( state: IAuthentication, claims: IClaims ) => SetClaims(state, claims),
-        SetEmail: ( state: IAuthentication, email: string ) => state.claims.emailaddress = email,
+        SetEmail: ( state: IAuthentication, email: string ) => state.claims.email = email,
+        SetName: ( state: IAuthentication, name: string ) => state.claims.name = name,
     },
     actions: {
     },
