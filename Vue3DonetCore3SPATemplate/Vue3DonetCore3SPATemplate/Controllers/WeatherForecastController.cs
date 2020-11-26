@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Vue3DonetCore3SPATemplate.DAL.Models;
+using Vue3DonetCore3SPATemplate.Helper.Auth;
 
 namespace Vue3DonetCore3SPATemplate.Controllers
 {
@@ -25,7 +27,7 @@ namespace Vue3DonetCore3SPATemplate.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [AuthorizeRole(UserRoles.User)]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();

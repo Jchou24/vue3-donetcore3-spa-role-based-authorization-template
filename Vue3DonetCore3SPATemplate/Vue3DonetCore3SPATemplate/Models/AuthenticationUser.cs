@@ -11,6 +11,10 @@ namespace Vue3DonetCore3SPATemplate.Models
         [Required(AllowEmptyStrings = false)]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
+        public string Password { get; set; }
+
         public string Name { get; set; }
     }
 }

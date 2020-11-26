@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Vue3DonetCore3SPATemplate.DAL;
+using Vue3DonetCore3SPATemplate.DAL.DBModels;
+using Vue3DonetCore3SPATemplate.Helper.Auth;
+using Vue3DonetCore3SPATemplate.Helper.Extensions;
 using Vue3DonetCore3SPATemplate.Models;
 
 namespace Vue3DonetCore3SPATemplate.Controllers
@@ -16,6 +20,13 @@ namespace Vue3DonetCore3SPATemplate.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        protected readonly IUserAuthHandler<User, int> _authHandler;
+
+        public AccountController(IUserAuthHandler<User, int> authHandler)
+        {
+            this._authHandler = authHandler;
+        }
+
         [HttpGet]
         public bool IsLogin()
         { 
@@ -30,24 +41,23 @@ namespace Vue3DonetCore3SPATemplate.Controllers
             //    return BadRequest();
             //}
 
-            if (authenticationUser.Email != "test@auth.com")
+            var user = _authHandler.Find(x => x.Email == authenticationUser.Email).FirstOrDefault();
+            if (user == null)
             {
-                ModelState.AddModelError("Email", "Invalid email");
+                ModelState.AddModelError("Fail", "Invalid account or password");
                 return BadRequest(ModelState);
-                //return BadRequestapiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
             }
-
-            var user = new AuthenticationUser()
+            
+            if (!SecurePasswordHasher.Verify(authenticationUser.Password, user.PasswordHash))
             {
-                Email = authenticationUser.Email,
-                Name = "Chocolate Cookie"
-            };
+                ModelState.AddModelError("Fail", "Invalid account or password");
+                return BadRequest(ModelState);
+            }
 
             var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.Role, "Administrator"),
+                    new Claim(ClaimTypes.NameIdentifier , user.Id.ToString()),
                 };
 
             var claimsIdentity = new ClaimsIdentity(
@@ -84,7 +94,7 @@ namespace Vue3DonetCore3SPATemplate.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            return Ok("ok");
+            return Ok();
         }
 
         [HttpPost]
@@ -92,14 +102,26 @@ namespace Vue3DonetCore3SPATemplate.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return Ok("ok");
+            return Ok();
         }
 
         [HttpGet]
         [Authorize]
         public UserInfo GetUserInfo()
         {
-            var userInfo = new UserInfo(User.Claims.ToList());
+            int? id = User.GetUserId();
+            if (id == null)
+            {
+                return null;
+            }
+
+            var user = _authHandler.FindById((int)id);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var userInfo = new UserInfo(user);
             return userInfo;
         }
 

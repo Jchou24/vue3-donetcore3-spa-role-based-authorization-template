@@ -3,24 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Vue3DonetCore3SPATemplate.DAL.DBModels;
+using Vue3DonetCore3SPATemplate.DAL.Models;
 
 namespace Vue3DonetCore3SPATemplate.Models
 {
     public class UserInfo
     {
-        //public List<SimpleClaim> Claims { get; set; } = new List<SimpleClaim>();
+        public string Name { get; set; }
+        public string Email { get; set; }
 
-        public Dictionary<string, string> Claims { get; set; } = new Dictionary<string, string>();
+        public AccountStatus AccountStatus { get; set; }
 
-        public UserInfo(IEnumerable<Claim> claims)
+        public ICollection<UserRole> UserRoles { get; set; }
+
+        public UserInfo(User user)
         {
-            foreach (var claim in claims)
-            {
-                string type = claim.Type.Split("/").Last();
-                string value = claim.Value;
-
-                this.Claims[type] = value;
-            }
+            this.Name = user.Name;
+            this.Email = user.Email;
+            this.AccountStatus = user.AccountStatus;
+            this.UserRoles = user.UserRoles;
         }
     }
 }
